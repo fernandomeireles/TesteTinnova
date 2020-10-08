@@ -2,6 +2,7 @@ package br.com.teste.tinnova.controller;
 
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.teste.tinnova.business.BubbleShortBo;
+import br.com.teste.tinnova.model.BubbleShortResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -19,12 +22,19 @@ public class BubbleShortController implements Serializable {
 
 	private static final long serialVersionUID = -531840333641208754L;
 
+	@Autowired
+	BubbleShortBo bubbleShortBo;
+
 	@ApiOperation(value = "Perform the bubble short ordenation")
 	@GetMapping(value = "/bubbleShort")
+	public ResponseEntity<BubbleShortResponse> getBubbleShortResult(
+			@RequestParam(value = "vector", required = true) Integer[] vector) throws Exception {
 
-	public ResponseEntity<Object> getBubbleShortResult(@RequestParam(value = "vector", required = true) int[] vector) {
+		BubbleShortResponse bubbleShortResponse = new BubbleShortResponse();
 
-		return new ResponseEntity<Object>("Teste", HttpStatus.OK);
+		bubbleShortResponse = bubbleShortBo.executeBubbleShort(vector);
+
+		return new ResponseEntity<BubbleShortResponse>(bubbleShortResponse, HttpStatus.OK);
 	}
 
 }

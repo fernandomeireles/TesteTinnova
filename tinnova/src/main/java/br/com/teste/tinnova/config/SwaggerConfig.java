@@ -21,8 +21,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 	}
 
 	private ApiInfo metaData() {
-		return new ApiInfoBuilder().title("Spring Boot REST API for Test TINNOVA")
-				.description("\"API for exercicies 1, 2, 3, 4 and 5\"").version("1.0.0")
+		return new ApiInfoBuilder().title("REST API for Test TINNOVA")
+				.description("\"API for exercises 1, 2, 3 e 4 \"").version("1.0.0")
 				.license("Apache License Version 2.0").licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
 				.build();
 	}
