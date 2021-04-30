@@ -35,13 +35,9 @@ public class ElectionController implements Serializable {
 			@RequestParam(value = "blankVotes", required = true) int blankVotes,
 			@RequestParam(value = "nullVotes", required = true) int nullVotes) throws Exception {
 
-		ElectionResponse electionResponse = new ElectionResponse();
+		ElectionResponse electionResponse = new ElectionResponse(0,0,0);
 
-		ElectionRequest election = new ElectionRequest();
-		election.setBlankVotes(blankVotes);
-		election.setNullVotes(nullVotes);
-		election.setTotalVoters(totalVoters);
-		election.setValidVotes(validVotes);
+		ElectionRequest election = new ElectionRequest(totalVoters, validVotes, blankVotes, nullVotes);
 
 		electionResponse = electionBo.validationParameters(election);
 

@@ -16,7 +16,7 @@ public class GenericErrorHandler {
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ElectionResponse handleBadInputStructure(MethodArgumentTypeMismatchException exception) {
 
-		ElectionResponse election = new ElectionResponse();
+		ElectionResponse election = new ElectionResponse(0,0,0);
 		election.setValidRequest(false);
 		election.setStatus("Only INTEGER Number");
 

@@ -10,74 +10,55 @@ import br.com.teste.tinnova.model.ElectionResponse;
 @Service
 public class ElectionBoImpl implements ElectionBo {
 
-	public static double HUNDRED = 100.00;
+    public static double HUNDRED = 100.00;
 
-	@Override
-	public ElectionResponse calculateResultOfElection(ElectionRequest election) {
+    @Override
+    public ElectionResponse calculateResultOfElection(ElectionRequest election) {
 
-		ElectionResponse electionResult = new ElectionResponse();
+        ElectionResponse electionResult = new ElectionResponse(calculatePercentageVotes(election.getValidVotes(), election.getTotalVoters()),
+                calculatePercentageVotes(election.getBlankVotes(), election.getTotalVoters()),
+                calculatePercentageVotes(election.getNullVotes(), election.getTotalVoters())
+        );
 
-		electionResult.setPercentageBlankVotes(
-				calculatePercentageBlankVotes(election.getBlankVotes(), election.getTotalVoters()));
+        electionResult.setStatus(ElectionEnum.SUCESS.getStatus());
+        electionResult.setValidRequest(true);
 
-		electionResult.setPercentageNullVotes(
-				calculatePercentageNullVotes(election.getNullVotes(), election.getTotalVoters()));
+        return electionResult;
+    }
 
-		electionResult.setPercentageValidVotes(
-				calculatePercentageValidVotes(election.getValidVotes(), election.getTotalVoters()));
+    private double calculatePercentageVotes(int votes, int totalVoters) {
 
-		electionResult.setStatus(ElectionEnum.SUCESS.getStatus());
-		electionResult.setValidRequest(true);
+        return (Double.valueOf(votes * HUNDRED) / totalVoters);
+    }
 
-		return electionResult;
-	}
+    @Override
+    public ElectionResponse validationParameters(ElectionRequest election) {
 
-	@Override
-	public double calculatePercentageValidVotes(int validVotes, int totalVoters) {
+        ElectionResponse electionResponse = new ElectionResponse(0, 0, 0);
 
-		return (Double.valueOf(validVotes / HUNDRED) * totalVoters);
-	}
+        if (election.getBlankVotes() > election.getTotalVoters()) {
+            electionResponse.setStatus(ElectionEnum.INVALID_BLANKS.getStatus());
+            electionResponse.setValidRequest(false);
 
-	@Override
-	public double calculatePercentageNullVotes(int nullVotes, int totalVoters) {
+        } else if (election.getNullVotes() > election.getTotalVoters()) {
+            electionResponse.setStatus(ElectionEnum.INVALID_NULLS.getStatus());
+            electionResponse.setValidRequest(false);
 
-		return (Double.valueOf(nullVotes / HUNDRED) * totalVoters);
-	}
+        } else if (election.getValidVotes() > election.getTotalVoters()) {
+            electionResponse.setStatus(ElectionEnum.INVALID_VALIDS.getStatus());
+            electionResponse.setValidRequest(false);
 
-	@Override
-	public double calculatePercentageBlankVotes(int blankVotes, int totalVoters) {
+        } else if ((election.getValidVotes() + election.getBlankVotes() + election.getNullVotes()) != election
+                .getTotalVoters()) {
+            electionResponse.setStatus(ElectionEnum.INVALID_TOTAL.getStatus());
+            electionResponse.setValidRequest(false);
 
-		return (Double.valueOf(blankVotes / HUNDRED) * totalVoters);
-	}
+        } else {
+            electionResponse.setStatus(ElectionEnum.SUCESS.getStatus());
+            electionResponse.setValidRequest(true);
+        }
 
-	@Override
-	public ElectionResponse validationParameters(ElectionRequest election) {
-
-		ElectionResponse electionResponse = new ElectionResponse();
-
-		if (election.getBlankVotes() > election.getTotalVoters()) {
-			electionResponse.setStatus(ElectionEnum.INVALID_BLANKS.getStatus());
-			electionResponse.setValidRequest(false);
-
-		} else if (election.getNullVotes() > election.getTotalVoters()) {
-			electionResponse.setStatus(ElectionEnum.INVALID_NULLS.getStatus());
-			electionResponse.setValidRequest(false);
-
-		} else if (election.getValidVotes() > election.getTotalVoters()) {
-			electionResponse.setStatus(ElectionEnum.INVALID_VALIDS.getStatus());
-			electionResponse.setValidRequest(false);
-
-		} else if ((election.getValidVotes() + election.getBlankVotes() + election.getNullVotes()) != election
-				.getTotalVoters()) {
-			electionResponse.setStatus(ElectionEnum.INVALID_TOTAL.getStatus());
-			electionResponse.setValidRequest(false);
-
-		} else {
-			electionResponse.setStatus(ElectionEnum.SUCESS.getStatus());
-			electionResponse.setValidRequest(true);
-		}
-
-		return electionResponse;
-	}
+        return electionResponse;
+    }
 
 }
